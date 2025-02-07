@@ -126,6 +126,9 @@ class EventSignup extends Component
             'verified' => $this->verified,
         ]);
 
+        // Debugging line
+        // dd(session()->get('event_signup_data')); // Check if data is stored in session
+
         return redirect()->route('bkash-create-payment', [
             'amount' => $this->reg_fee,  // Payment amount
             'user_id' => Auth::id(), // Pass user ID to track the user

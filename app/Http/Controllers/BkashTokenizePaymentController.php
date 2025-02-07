@@ -63,6 +63,14 @@ class BkashTokenizePaymentController extends Controller
         // paymentID=your_payment_id&status=success&apiVersion=1.2.0-beta
         //using paymentID find the account number for sending params
 
+        // Get session data
+        $formData = session()->get('event_signup_data');
+
+        if (!$formData) {
+            // Debugging line if no form data is found
+            dd('No form data found in session.');
+        }
+
         if ($request->status == 'success') {
             $response = BkashPaymentTokenize::executePayment($request->paymentID);
             Log::info('Execute Payment Response:', ['response' => $response]);
@@ -81,38 +89,30 @@ class BkashTokenizePaymentController extends Controller
                 $event = Event::find($event_id);
 
                 if ($user && $event) {
-                    // Ensure reg_fee is set, fallback to the value passed in the request
-                    $reg_fee = $request->amount;  // Get the amount from the request
-
-                    // If for some reason reg_fee is still null, you can default to zero
-                    if (is_null($reg_fee)) {
-                        $reg_fee = 1015;
-                    }
-
                     EventReg::create([
                         'user_id' => $user->id,
                         'event_id' => $event->id,
                         'tshirt_size' => $user->tshirt_size,
-                        'attendance' => $request->attendance ?? 'present', // Default to 'present'
-                        'guest_status' => $request->guest_status ?? 'no_guest', // Default to 'no_guest'
-                        'adult_guest_count' => $request->adult_guest_count ?? 0, // Default to 0
-                        'child_guest_count' => $request->child_guest_count ?? 0, // Default to 0
-                        'guest_fee' => $request->guest_fee ?? 0, // Default to 0
+                        'attendance' => $formData['attendance'],
+                        'guest_status' => $formData['guest_status'],
+                        'adult_guest_count' => $formData['adult_guest_count'],
+                        'child_guest_count' => $formData['child_guest_count'],
+                        'guest_fee' => $formData['guest_fee'],
                         'payment_method' => 'bkashpay',
-                        'reg_fee' => $reg_fee,
-                        'trx_id_bkash' => $response['trxID'], // ✅ trxID is stored
+                        'reg_fee' => $formData['reg_fee'],
+                        'trx_id_bkash' => $response['trxID'], // Ensure trxID is stored
                         'verified' => 'paymentverified',
                     ]);
+
+                    return redirect()->route('dashboard')->with('message', 'Payment successful!');
                 }
 
-                return redirect()->route('dashboard')->with('message', 'Payment successful!');
+                return redirect()->route('dashboard')->with('error', 'Payment Failed!');
+            } elseif ($request->status == 'cancel') {
+                return redirect()->route('dashboard')->with('error', 'Payment Aborted!');
+            } else {
+                return redirect()->route('dashboard')->with('error', 'Transaction Failed!');
             }
-
-            return redirect()->route('dashboard')->with('error', 'Payment Failed!');
-        } elseif ($request->status == 'cancel') {
-            return redirect()->route('dashboard')->with('error', 'Payment Aborted!');
-        } else {
-            return redirect()->route('dashboard')->with('error', 'Transaction Failed!');
         }
     }
 
