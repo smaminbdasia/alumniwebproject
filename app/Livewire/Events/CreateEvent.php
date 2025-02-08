@@ -60,10 +60,10 @@ class CreateEvent extends Component
     {
         $this->validate();
 
-        $coverPhotoPath = null; // Prevent undefined variable issue
+        $coverPhotoPath = null;
 
         if ($this->editing) {
-            // ✅ Find and update the existing event
+
             $event = Event::find($this->eventId);
             $event->update([
                 'title' => $this->title,
@@ -78,7 +78,7 @@ class CreateEvent extends Component
                 'event_status' => $this->event_status,
             ]);
         } else {
-            // ✅ Store the created event in $event
+
             $event = Event::create([
                 'title' => $this->title,
                 'title_bangla' => $this->title_bangla,

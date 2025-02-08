@@ -30,7 +30,8 @@
         <div class="justify-items-center px-12 mx-6">
             {{-- <x-authentication-card-logo /> --}}
 
-            <div class="bangla-noto-500 inline-flex items-center mb-4 text-xl font-semibold text-gray-900 dark:text-white">
+            <div
+                class="bangla-noto-500 inline-flex items-center mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                 <x-application-logo class="w-8 h-8 mr-6" alt="logo" />
                 <span class="ml-4 text-base">বোয়াইলমারী কামিল মাদরাসা অ্যালামনাই অ্যাসোসিয়েশন আয়োজিত পুনর্মিলনী ও
                     সাংস্কৃতিক সন্ধ্যা ২০২৫
@@ -40,10 +41,10 @@
                 class="mb-2 bangla-noto-800 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white text-green-800">
                 নিবন্ধন ফরম
             </h1>
-             <a class="bangla-noto-400 text-center underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    href="{{ route('login') }}">
-                    {{ __(' আগেই নিবন্ধিত হলে ড্যাশবোর্ডে লগইন করুন') }}
-                </a>
+            <a class="bangla-noto-400 text-center underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                href="{{ route('login') }}">
+                {{ __(' আগেই নিবন্ধিত হলে ড্যাশবোর্ডে লগইন করুন') }}
+            </a>
         </div>
 
         <x-validation-errors class="mb-4" />
@@ -53,15 +54,27 @@
             @csrf
 
 
-
             {{-- Divider --}}
             <div class="flex items-center">
                 <div class="mt-6 mb-3 w-full h-0.5 bg-gray-100 dark:bg-gray-700"></div>
             </div>
 
+            <div class="flex items-center space-x-1">
+                <span class="text-red-500 me-2">*</span>
+                <x-label value="{{ __('Marked Fields are Required') }}" />
+            </div>
+
+            {{-- Divider --}}
+            <div class="flex items-center">
+                <div class="mt-1 mb-4 w-full h-0.5 bg-gray-100 dark:bg-gray-700"></div>
+            </div>
+
             <!-- Name -->
             <div>
-                <x-label for="name" value="{{ __('Name') }}" />
+                <div class="flex items-center space-x-1">
+                    <x-label for="name" value="{{ __('Name') }}" />
+                    <span class="text-red-500 ms-1">*</span>
+                </div>
                 <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')"
                     required autofocus autocomplete="name" placeholder="e.g. Abdullah Al Mahmud" />
                 @error('name')
@@ -72,7 +85,10 @@
 
             <!-- Name in Bangla -->
             <div class="mt-4 bangla-noto-500">
-                <x-label for="nameBangla" value="{{ __('পূর্ণনাম (বাংলায়)') }}" />
+                <div class="flex items-center space-x-1">
+                    <x-label for="nameBangla" value="{{ __('পূর্ণনাম (বাংলায়)') }}" />
+                    <span class="text-red-500 ms-1">*</span>
+                </div>
                 <x-input id="nameBangla" class="block mt-1 w-full" type="text" name="nameBangla" :value="old('nameBangla')"
                     autofocus autocomplete="nameBangla" placeholder="উদাহরণ: আব্দুল্লাহ আল মাহমুদ" />
                 @error('nameBangla')
@@ -93,7 +109,10 @@
                 <!-- T-Shirt Size -->
 
                 <div>
-                    <x-label for="tshirt_size" value="{{ __('Your T-Shirt Size?') }}" class="" />
+                    <div class="flex items-center space-x-1">
+                        <x-label for="tshirt_size" value="{{ __('Your T-Shirt Size?') }}" />
+                        <span class="text-red-500 ms-1">*</span>
+                    </div>
                     <select id="tshirt_size" name="tshirt_size"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="" disabled {{ old('tshirt_size') ? '' : 'selected' }}>Select a size
@@ -142,8 +161,8 @@
 
                 <div class="">
                     <x-label for="birthday" value="{{ __('Date of Birth') }}" />
-                    <x-input id="birthday" class="block mt-1 w-full" type="date" name="birthday" :value="old('birthday')"
-                        autofocus autocomplete="birthday" max="2015-12-31" />
+                    <x-input id="birthday" class="block mt-1 w-full" type="date" name="birthday"
+                        :value="old('birthday')" autofocus autocomplete="birthday" max="2015-12-31" />
                     @error('birthday')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
@@ -285,7 +304,11 @@
             <div class="grid gap-6 sm:grid-cols-2">
 
                 <div class="">
-                    <x-label for="dakhilBatch" value="{{ __('Dakhil Batch (Passing Year)') }}" />
+                    <div class="flex items-center space-x-1">
+                        <x-label for="dakhilBatch" value="{{ __('Dakhil/SSC Batch (Passing Year)') }}" />
+                        <span class="text-red-500 ms-1">*</span>
+                    </div>
+                    <p class="bangla-noto-400 text-xs">যে কোনো প্রতিষ্ঠান থেকে হতে পারে</p>
                     <x-input id="dakhilBatch" class="block mt-1 w-full" type="number" name="dakhilBatch"
                         :value="old('dakhilBatch')" required autofocus min='1901' max='2024' placeholder="e.g. 1996" />
                     @error('dakhilBatch')
@@ -294,9 +317,13 @@
                 </div>
 
                 <div class="">
-                    <x-label for="alimBatch" value="{{ __('Alim Batch (Passing Year)') }}" />
+                    <div class="flex items-center space-x-1">
+                        <x-label for="alimBatch" value="{{ __('Alim/HSC Batch (Passing Year)') }}" />
+                        {{-- <span class="text-red-500 ms-1">*</span> --}}
+                    </div>
+                    <p class="bangla-noto-400 text-xs">যে কোনো প্রতিষ্ঠান থেকে হতে পারে</p>
                     <x-input id="alimBatch" class="block mt-1 w-full" type="number" name="alimBatch"
-                        :value="old('alimBatch')" required autofocus min='1901' max='2024' placeholder="e.g. 1998" />
+                        :value="old('alimBatch')" autofocus min='1901' max='2024' placeholder="e.g. 1998" />
                     @error('alimBatch')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
@@ -316,7 +343,10 @@
 
                 <!-- Mobile Number -->
                 <div class="">
-                    <x-label for="phone" value="{{ __('Mobile Number (Primary)') }}" />
+                    <div class="flex items-center space-x-1">
+                        <x-label for="phone" value="{{ __('Mobile Number (Primary)') }}" />
+                        <span class="text-red-500 ms-1">*</span>
+                    </div>
                     <x-input id="phone" class="block mt-1 w-full" type="tel" name="phone"
                         :value="old('phone')" required autocomplete="tel" placeholder="e.g. 01911222333" />
                     @error('phone')
@@ -336,7 +366,10 @@
 
                 <!-- Email -->
                 <div class="sm:col-span-2">
-                    <x-label for="email" value="{{ __('Email Address (Gmail)') }}" />
+                    <div class="flex items-center space-x-1">
+                        <x-label for="email" value="{{ __('Email Address (Gmail)') }}" />
+                        <span class="text-red-500 ms-1">*</span>
+                    </div>
                     <x-input id="email" class="block mt-1 w-full" type="email" name="email"
                         :value="old('email')" required autocomplete="username" placeholder="Your Gmail Address" />
                     @error('email')
@@ -346,14 +379,20 @@
 
                 <!-- Password -->
                 <div class="">
-                    <x-label for="password" value="{{ __('Password') }}" />
+                    <div class="flex items-center space-x-1">
+                        <x-label for="password" value="{{ __('Create A New Password') }}" />
+                        <span class="text-red-500 ms-1">*</span>
+                    </div>
                     <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
                         autocomplete="new-password" placeholder="Min 8 Characters" />
                 </div>
 
                 <!-- Confirm Password -->
                 <div>
-                    <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                    <div class="flex items-center space-x-1">
+                        <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                        <span class="text-red-500 ms-1">*</span>
+                    </div>
                     <x-input id="password_confirmation" class="block mt-1 w-full" type="password"
                         name="password_confirmation" required autocomplete="new-password"
                         placeholder="Passwords must match" />

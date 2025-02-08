@@ -42,6 +42,7 @@
                         <h2 class="mt-3 mb-2 text-2xl bangla-noto-500 font-medium text-gray-900 dark:text-white">
                             {{ Auth::user()->nameBangla }}
                         </h2>
+
                         {{-- Divider --}}
                         <div class="flex items-center">
                             <div class="my-3 w-full h-0.5 bg-gray-100 dark:bg-gray-700"></div>
@@ -90,7 +91,7 @@
 
                         <!-- Consent -->
                         <div class="mt-6">
-                            <input type="checkbox" wire:model="consent" id="consent">
+                            <input type="checkbox" wire:model="consent" id="consent" checked>
                             <label for="consent">I give consent to use my profile photo</label>
                         </div>
 
@@ -110,7 +111,7 @@
                         </select>
 
                         @if ($guest_status === 'has_guest')
-                            <!-- Check if 'has_guest' is selected -->
+
                             <!-- Guest Counts -->
                             <label class="block mt-3 bangla-noto-500">প্রাপ্তবয়স্ক অতিথি সংখ্যা:</label>
                             <input type="number" wire:model="adult_guest_count" wire:change="calculateFees"
@@ -259,7 +260,7 @@
                             <x-label class="block mt-6">Transaction ID</x-label>
                             <p class="text-xs mb-2 bangla-noto-400 text-gray-400">ভেরিফিকেশনের জন্য ব্যাংকে পেমেন্টের
                                 রেফারেন্স আইডি</p>
-                            <input type="text" wire:model="trx_id" class="w-full p-2 border rounded-lg">
+                            <input type="text" id="trx_id" wire:model="trx_id" class="w-full p-2 border rounded-lg">
                             @error('trx_id')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
                             @enderror

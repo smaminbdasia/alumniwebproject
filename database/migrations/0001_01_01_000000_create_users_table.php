@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('tshirt_size');
 
             $table->integer('dakhilBatch');
-            $table->integer('alimBatch');
+            $table->integer('alimBatch')->nullable();
             $table->longText('address')->nullable();
             $table->string('district')->nullable();
 

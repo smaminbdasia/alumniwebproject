@@ -34,7 +34,7 @@ class CreateNewUser implements CreatesNewUsers
             'birthday' => ['nullable', 'date'],
             'bloodgroup' => ['nullable', 'string'],
             'dakhilBatch' => ['required', 'integer'],
-            'alimBatch' => ['required', 'integer'],
+            'alimBatch' => ['nullable', 'integer'],
 
             'address' => ['nullable', 'string'],
             'district' => ['nullable', 'string', 'max:255'],

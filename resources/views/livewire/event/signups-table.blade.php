@@ -94,7 +94,7 @@
                     </td>
                     <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap lg:mr-0">
                         <img class="w-10 h-10 rounded-full" src={{ $signup->user->profile_photo_url }}
-                            alt="Neil Sims avatar">
+                            alt="Profile Photo">
                         <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
                             <div class="text-base font-semibold text-gray-900 dark:text-white">
                                 {{ $signup->user->name }}

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('event_id')->nullable()->constrained('events')->nullOnDelete();
             $table->string('tshirt_size')->nullable();
-            $table->enum('attendance', ['present', 'absent', 'not_decided'])->default('present');
+            $table->enum('attendance', ['present', 'absent', 'not_decided'])->nullable()->default('present');
             $table->boolean('consent')->default(true);
             $table->enum('guest_status', ['has_guest', 'no_guest'])->default('no_guest');
             $table->integer('adult_guest_count')->default(0);

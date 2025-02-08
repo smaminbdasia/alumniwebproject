@@ -27,8 +27,8 @@ class EventSignup extends Component
     public $verified = 'notyet';
 
     protected $rules = [
-        'attendance' => 'required|in:present,absent,not_decided',
-        'consent' => 'boolean',
+        'attendance' => 'nullable|in:present,absent,not_decided',
+        'consent' => 'nullable|boolean',
         'guest_status' => 'required|in:has_guest,no_guest',
         'adult_guest_count' => 'required|integer|min:0',
         'child_guest_count' => 'required|integer|min:0',
@@ -97,21 +97,14 @@ class EventSignup extends Component
 
     public function submit()
     {
-        $this->validate();
-
-        // Ensure reg_fee is calculated before submitting
-        $this->calculateFees(); // Recalculate in case there were any changes
-
-        if ($this->payment_method === 'bkashpay') {
-            return $this->redirectToBkashGateway();
+        if ($this->payment_method === 'bankpay' && empty($this->trx_id)) {
+            $this->addError('trx_id', 'Transaction ID is required for bank payments.');
+            return;
         }
 
-        $this->storeRegistration();
-    }
+        $this->validate();
+        $this->calculateFees();
 
-    public function redirectToBkashGateway()
-    {
-        // Store form data in session
         session()->put('event_signup_data', [
             'attendance' => $this->attendance,
             'consent' => $this->consent,
@@ -123,11 +116,39 @@ class EventSignup extends Component
             'reg_fee' => $this->reg_fee,
             'trx_id' => $this->trx_id,
             'ref_id' => $this->ref_id,
-            'verified' => $this->verified,
+            'verified' => 'notyet',
         ]);
 
-        // Debugging line
-        // dd(session()->get('event_signup_data')); // Check if data is stored in session
+        logger()->info('Payment Method:', ['payment_method' => $this->payment_method, 'guest_status' => $this->guest_status, 'adult_guest_count' => $this->adult_guest_count, 'child_guest_count' => $this->child_guest_count]);
+
+
+        if ($this->payment_method === 'bkashpay') {
+            return $this->redirectToBkashGateway();
+        }
+
+        $this->storeRegistration();
+    }
+
+    public function redirectToBkashGateway()
+    {
+        $signupData = [
+            'attendance' => $this->attendance ?? 'present',
+            'consent' => $this->consent,
+            'guest_status' => $this->guest_status,
+            'adult_guest_count' => $this->adult_guest_count,
+            'child_guest_count' => $this->child_guest_count,
+            'guest_fee' => $this->guest_fee,
+            'payment_method' => $this->payment_method,
+            'reg_fee' => $this->reg_fee,
+            'trx_id' => $this->trx_id,
+            'ref_id' => $this->ref_id,
+            'verified' => $this->verified ?? 'notyet',
+        ];
+
+        session()->put('event_signup_data', $signupData);
+        session()->save();
+
+        logger()->info('Session data just saved:', session()->get('event_signup_data'));
 
         return redirect()->route('bkash-create-payment', [
             'amount' => $this->reg_fee,  // Payment amount
@@ -138,25 +159,21 @@ class EventSignup extends Component
 
     public function storeRegistration($bkash_trx_id = null)
     {
-        // Debugging: Check if form data is present
-        if (!session()->has('event_signup_data')) {
-            dd('Form data is missing in session.');
+        $formData = session()->get('event_signup_data', []);
+
+        if (empty($formData)) {
+            logger()->error('Session data is missing in storeRegistration', session()->all());
+            abort(500, 'Session data missing. Please try again.');
         }
 
-        // Retrieve form data from session
-        $formData = session()->get('event_signup_data');
-
-        // Debugging: Check if attendance is set
-        if (empty($formData['attendance'])) {
-            dd('Attendance is not set.', $formData);
-        }
+        logger()->info('Session data before storing registration:', $formData);
 
         EventReg::create([
             'user_id' => Auth::id(),
             'event_id' => $this->event->id,
             'tshirt_size' => Auth::user()->tshirt_size,
-            'attendance' => $formData['attendance'],
-            'consent' => $formData['consent'],
+            'attendance' => $formData['attendance'] ?? 'present',
+            'consent' => $formData['consent'] ?? true,
             'guest_status' => $formData['guest_status'],
             'adult_guest_count' => $formData['adult_guest_count'],
             'child_guest_count' => $formData['child_guest_count'],
@@ -166,10 +183,10 @@ class EventSignup extends Component
             'trx_id' => $formData['trx_id'],
             'ref_id' => $formData['ref_id'],
             'trx_id_bkash' => $bkash_trx_id,
-            'verified' => $formData['verified'],
+            'verified' => $formData['verified'] ?? 'notyet',
         ]);
 
-        // Clear the session data after use
+        // Clearing the session data after use
         session()->forget('event_signup_data');
 
         session()->flash('message', 'Registration successful!');
