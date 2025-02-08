@@ -3,7 +3,7 @@
     <div class="px-4 pt-8 mx-auto max-w-screen-xl text-center lg:pt-16 lg:pb-8 lg:px-12">
         <h1
             class="mb-4 text-2xl bangla-noto-800 font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-            রেজিস্ট্রেশন শুরু হতে যাচ্ছে</h1>
+            রেজিস্ট্রেশন</h1>
         <p
             class="mb-8 font-light bangla-noto-500 text-gray-500 md:text-lg lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
             রিইউনিয়নে অংশ নিতে আজই রেজিস্ট্রেশন করে ফেলুন।</p>
